@@ -1,0 +1,7 @@
+[
+	{"name":"wood", "maxDamage":120, "sharpnessDecrease":3},
+	{"name":"stone", "maxDamage":350, "sharpnessDecrease":2},
+	{"name":"bone", "maxDamage":250, "sharpnessDecrease":2},
+	{"name":"iron", "maxDamage":500, "sharpnessDecrease":1},
+	{"name":"flint", "maxDamage":1, "sharpnessDecrease":1}
+]

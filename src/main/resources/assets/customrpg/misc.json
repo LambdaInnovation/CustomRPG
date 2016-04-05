@@ -1,0 +1,10 @@
+[
+	{
+	"type":"ItemCustomMisc",
+	"name":"hone",
+	"attributes":[
+		{"type":"item.MaterialType","data":{"value":"flint"}},
+		{"type":"item.MaxStackSize","data":{"value":16}}
+		]
+	}
+]

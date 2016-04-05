@@ -1,0 +1,24 @@
+[
+	{
+	"type":"ItemCustomMelee",
+	"name":"iron_sword",
+	"attributes":[
+		{"type":"general.PhysicalDamage","data":{"value":8.0}},
+		{"type":"item.MaterialType","data":{"value":"iron"}},
+		{"type":"general.AttackSpeed","data":{"value":-0.5}},
+		{"type":"general.CriticalMulti","data":{"value":1.0}}
+		]
+	},
+	{
+	"type":"ItemCustomMelee",
+	"name":"dagger",
+	"attributes":[
+		{"type":"general.PhysicalDamage","data":{"value":3.0}},
+		{"type":"item.MaterialType","data":{"value":"wood"}},
+		{"type":"general.AttackSpeed","data":{"value":2.0}},
+		{"type":"general.CriticalRate","data":{"value":0.5}},
+		{"type":"general.CriticalMulti","data":{"value":1.5}},
+		{"type":"effect.HealthStealth","data":{"percent":0.1}}
+		]
+	}
+]

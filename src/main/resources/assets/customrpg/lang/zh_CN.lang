@@ -1,0 +1,27 @@
+﻿#zh_CN
+
+#=========
+#= Weapons =
+#=========
+
+#=========
+#= Attributes =
+#=========
+#=========
+customrpg.attribute.Sharpness=锋利值
+customrpg.attribute.MaterialType=物品材质
+customrpg.attribute.MaterialType_wood=木质
+customrpg.attribute.MaterialType_stone=石质
+customrpg.attribute.MaterialType_bone=骨质
+customrpg.attribute.MaterialType_iron=铁质
+customrpg.attribute.MaterialType_flint=燧石
+#=========
+customrpg.attribute.MaxStackSize=最大堆叠: %s个
+#=========
+customrpg.attribute.BaseDamage=基础伤害
+customrpg.attribute.PhysicalDamage=物理伤害
+customrpg.attribute.AttackSpeed=攻击速度
+customrpg.attribute.CriticalRate=暴击几率
+customrpg.attribute.CriticalMulti=暴击伤害
+#=========
+customrpg.attribute.HealthStealth=效果:§4 %s §f的攻击伤害转为生命偷取
