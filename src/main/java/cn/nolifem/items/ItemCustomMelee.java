@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 import cn.nolifem.CustomRPG;
 import cn.nolifem.api.IAttributeCR;
 import cn.nolifem.api.IAttributeContainer;
-import cn.nolifem.api.IStateContainer;
+import cn.nolifem.api.IStateBuffer;
 import cn.nolifem.api.IStateItem;
 import cn.nolifem.api.attributes.GeneralAttribute;
 import cn.nolifem.attributes.general.PhysicalDamage;
@@ -63,22 +63,22 @@ public class ItemCustomMelee extends ItemSword implements IAttributeContainer, I
         return false;
     }
     
-	public boolean hitEntity(ItemStack stack, EntityLivingBase hite, EntityLivingBase e){
+	public boolean hitEntity(ItemStack stack, EntityLivingBase hit, EntityLivingBase e){
 		if(e instanceof EntityPlayer)
-			((MeleeState) PlayerItemStateBuffer.get(e).getItemState(stack)).dealAttack((EntityPlayer)e);
+			( (MeleeState)ModuleState.get(stack, e) ).dealAttack( (EntityPlayer)e );
 	    return true;
 	}
 	
     public boolean onBlockDestroyed(ItemStack stack, World p_150894_2_, Block p_150894_3_, int p_150894_4_, int p_150894_5_, int p_150894_6_, EntityLivingBase e){
     	if(e instanceof EntityPlayer)
-    		((MeleeState) PlayerItemStateBuffer.get(e).getItemState(stack)).dealAttack((EntityPlayer)e);
+			( (MeleeState)ModuleState.get(stack, e) ).dealAttack( (EntityPlayer)e );
     	return true;
     }
     ////Info Dealing
 	
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List arraylist, boolean flag) {
-		((MeleeState) PlayerItemStateBuffer.get(player).getItemState(stack)).addInfo(arraylist);;
+		( (MeleeState)ModuleState.get(stack, player) ).addInfo(arraylist);
 	}
 	
 	public static String translate(String s){
@@ -92,7 +92,7 @@ public class ItemCustomMelee extends ItemSword implements IAttributeContainer, I
 	}
 
 	@Override
-	public MeleeState getState(EntityPlayer player, ItemStack stack, IStateContainer container) {
-		return MeleeState.get(player, stack, container);
+	public Optional<MeleeState> getState(EntityLivingBase living, ItemStack stack, IStateBuffer buffer) {
+		return MeleeState.get(living, stack, buffer);
 	}
 }

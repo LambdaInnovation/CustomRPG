@@ -66,8 +66,8 @@ public class ModuleItem {
 									Class<?> type = Class.forName(
 											ModProps.attributeFullName(
 													attObj.get("type").getAsString()));
-									
-									//System.out.println((IAttribute)gson.fromJson(attObj.get("data").getAsJsonObject(), type));
+
+									//System.out.println((IAttributeCR)gson.fromJson(attObj.get("data").getAsJsonObject(), type));
 									((IAttributeContainer)item).putAttr(
 											(IAttributeCR)gson.fromJson(
 											attObj.get("data").getAsJsonObject(), type));

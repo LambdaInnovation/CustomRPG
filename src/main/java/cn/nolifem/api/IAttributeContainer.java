@@ -1,6 +1,7 @@
 package cn.nolifem.api;
 
-import cn.nolifem.api.util.SortAttribute;
+import cn.nolifem.api.util.SortApply;
+import cn.nolifem.api.util.SortDisplay;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -10,7 +11,8 @@ import java.util.Map.Entry;
  */
 public interface IAttributeContainer {
 
-	public static final Comparator comp = SortAttribute.INSTANCE;
+	public static final Comparator displayComp = SortDisplay.INSTANCE;
+	public static final Comparator applyComp = SortApply.INSTANCE;
 
 	public void initAttr();
 
@@ -25,7 +27,7 @@ public interface IAttributeContainer {
 			attlist.add((IAttributeCR)
 					((Map.Entry<String, IAttributeCR>)iter.next()).getValue());
 		}
-		attlist.sort(comp);
+		attlist.sort(displayComp);
 		//System.out.println(attlist);
 		return attlist;
 	}

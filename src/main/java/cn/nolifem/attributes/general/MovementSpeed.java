@@ -2,23 +2,36 @@ package cn.nolifem.attributes.general;
 
 import java.util.List;
 
+import cn.nolifem.api.ICalculator;
 import cn.nolifem.api.attributes.GeneralAttribute;
-import net.minecraft.entity.EntityLivingBase;
+import cn.nolifem.state.EntityState;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.util.EnumChatFormatting;
 import cn.nolifem.api.IAttributeCR;
-import cn.nolifem.api.IAttributeDealer;
-import cn.nolifem.api.IOriginalModifier;
 import cn.nolifem.attributes.player.Dexterity;
 import cn.nolifem.util.Lang;
 
-public class MovementSpeed extends GeneralAttribute implements Cloneable, IOriginalModifier{
-	
+public class MovementSpeed extends GeneralAttribute implements Cloneable{
+
 	@Override
-	public void addFunction(IAttributeDealer calculator) {
-		calculator.<Double>addFunctionSIGMA(this.getClass().getSimpleName(), (input) -> input + this.getValue());
+	public <T> void addToDealer(T dealer){
+		super.addToDealer(dealer);
+
+		if(dealer instanceof EntityState){
+			IAttributeInstance attr = ((EntityState) dealer).getEntity().getAttributeMap().getAttributeInstance(SharedMonsterAttributes.movementSpeed);
+			AttributeModifier modifier = new AttributeModifier(SPEED_MODIFIER, "speed_up",
+					((EntityState) dealer).getCalcValue(this.getClass(), 0.0D), 1);
+			if(attr.getModifier(SPEED_MODIFIER) != null)
+				attr.removeModifier(modifier);
+			attr.applyModifier(modifier);
+		}
+	}
+
+	@Override
+	public void addFunction(ICalculator calculator) {
+		calculator.<Double>addFunction(SIGMA, this.getClass().getSimpleName(), (input) -> input + this.getValue());
 	}
 	
 	@Override	
@@ -27,19 +40,9 @@ public class MovementSpeed extends GeneralAttribute implements Cloneable, IOrigi
 	}
 
 	@Override
-	public void applyOriginalModify(IAttributeDealer calculator, EntityLivingBase living){
-		IAttributeInstance attr = living.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.movementSpeed);
-		AttributeModifier modifier = new AttributeModifier(SPEED_MODIFIER, "speed_up", 
-				calculator.calc(this.getClass().getSimpleName(), 0.0D), 1);
-		if(attr.getModifier(SPEED_MODIFIER) != null)
-			attr.removeModifier(modifier);
-		attr.applyModifier(modifier);
-	}
-	
-	@Override
 	public Class<? extends IAttributeCR> getPlayerAttrClass() {
 		return Dexterity.class;
 	}
 
-	public int getPreference(){ return 2;}
+	public int getDisplayPreference(){ return 2;}
 }

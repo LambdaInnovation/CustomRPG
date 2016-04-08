@@ -1,7 +1,10 @@
 package cn.nolifem.items;
 
 import java.util.List;
+import java.util.Optional;
 
+import cn.nolifem.state.ModuleState;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -10,12 +13,11 @@ import cn.lambdalib.annoreg.core.Registrant;
 import cn.lambdalib.annoreg.mc.gui.GuiHandlerBase;
 import cn.lambdalib.annoreg.mc.gui.RegGuiHandler;
 import cn.nolifem.CustomRPG;
-import cn.nolifem.api.IStateContainer;
+import cn.nolifem.api.IStateBuffer;
 import cn.nolifem.api.IStateItem;
 import cn.nolifem.core.ModProps;
 import cn.nolifem.gui.GuiGrind;
 import cn.nolifem.gui.container.ContainerGrind;
-import cn.nolifem.state.PlayerItemStateBuffer;
 import cn.nolifem.state.item.GrindToolState;
 import cn.nolifem.util.Lang;
 import cpw.mods.fml.relauncher.Side;
@@ -36,7 +38,7 @@ public class ItemGrindTool extends Item implements IStateItem<GrindToolState>{
         @Override
         protected Object getServerContainer(EntityPlayer player, World world, int x, int y, int z) {
             return player.getHeldItem() != null && player.getHeldItem().getItem() instanceof ItemGrindTool ?
-            		new ContainerGrind(player, ((GrindToolState) PlayerItemStateBuffer.get(player).getItemState(player.getHeldItem())) ) : null;
+            		new ContainerGrind(player, (GrindToolState) (ModuleState.get(player.getHeldItem(), player)) ) : null;
         }
     };
 
@@ -64,7 +66,7 @@ public class ItemGrindTool extends Item implements IStateItem<GrindToolState>{
 	}
 
 	@Override
-	public GrindToolState getState(EntityPlayer player, ItemStack stack, IStateContainer container) {
-		return GrindToolState.get(player, stack, container);
+	public Optional<GrindToolState> getState(EntityLivingBase living, ItemStack stack, IStateBuffer buffer) {
+		return GrindToolState.get(living, stack, buffer);
 	}
 }

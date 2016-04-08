@@ -5,7 +5,6 @@ import cn.nolifem.api.IAttributeCR;
 
 /**Simple Attribute with one value
  * @author Nolife_M
- * @param <T> Attribute's value
  */
 public abstract class GeneralAttribute extends BaseAttributeCR implements Cloneable{
 

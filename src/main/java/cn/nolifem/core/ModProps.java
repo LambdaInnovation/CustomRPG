@@ -1,5 +1,7 @@
 package cn.nolifem.core;
 
+import java.util.UUID;
+
 public class ModProps {
 	
     public static final String MODID = "customrpg";
@@ -12,6 +14,11 @@ public class ModProps {
     public static final String RESOURCE = "customrpg:";
     public static final String ModDependencies = "required-after:LambdaLib";
     public static final String ModChannel = "custom_rpg";
+    //calculator
+    public static final int SIGMA = 0;
+    public static final int PAI = 1;
+    //UUID
+    public static final UUID SPEED_MODIFIER = UUID.fromString("2af118ed-281e-4e74-a505-a32b979c9578");
     //lang
     public static final String ATTRIBUTE_LANG = "customrpg.attribute.";
     public static final String ITEM_lORE_LANG = "customrpg.item.lore.";

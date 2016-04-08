@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import cn.nolifem.api.IAttributeCR;
 import cn.nolifem.api.IAttributeContainer;
-import cn.nolifem.api.IStateContainer;
+import cn.nolifem.api.IStateBuffer;
 import cn.nolifem.api.attributes.BaseAttributeCR;
 import cn.nolifem.attributes.Material;
 import cn.nolifem.attributes.general.PhysicalDamage;
@@ -24,19 +24,25 @@ public class MeleeState extends ItemState implements IAttributeContainer {
 	private Map<String, IAttributeCR> attrMaps = new HashMap<>();
 	private List<IAttributeCR> attrInfoList = new ArrayList<>();
 
-	public static MeleeState get(EntityPlayer player, ItemStack stack, IStateContainer container){
-		String uuid = getStackID(stack);
-		MeleeState state = (MeleeState) container.getStateMap().get(uuid);
-		if(state == null){
-			state = new MeleeState(player, stack);
-			container.getStateMap().put(uuid, state);
+	public static Optional<MeleeState> get(EntityLivingBase living, ItemStack stack, IStateBuffer buffer){
+		Optional<MeleeState> state;
+		if(living instanceof  EntityPlayer && buffer != null){
+			String uuid = getStackID(stack);
+			state = Optional.ofNullable(
+					(MeleeState) buffer.getStateMap().get(uuid)
+			);
+			if(!state.isPresent()){
+				state = Optional.of( new MeleeState(living, stack) );
+				buffer.getStateMap().put(uuid, state.get());
+			}
+			state.get().setStack(stack);
 		}
-		state.setStack(stack);
-		return state;	
+		state = Optional.of( new MeleeState(living, stack) );
+		return state;
 	}
 	
-	public MeleeState(EntityPlayer player, ItemStack stack){
-		super(player, stack);
+	public MeleeState(EntityLivingBase living, ItemStack stack){
+		super(living, stack);
 		initState();
 		readFromStack();
 		saveToStack();
@@ -52,7 +58,7 @@ public class MeleeState extends ItemState implements IAttributeContainer {
 				sattr.sharpnessDecrease = Material.get(((MaterialType)mtype).getValue()).sharpnessDecrease;
 			}
 			this.putAttr(sattr);
-			System.out.println(this.getAttrMapAsList());
+			//System.out.println(this.getAttrMapAsList());
 		}
 	}
 
@@ -78,7 +84,7 @@ public class MeleeState extends ItemState implements IAttributeContainer {
 	
 	public void dealGrind(int multi){
 		Sharpness shpns = ((Sharpness)getAttr(Sharpness.class));
-		shpns.dealGrind(damageItem((int) Math.round(100 - shpns.sharpness), getPlayer()));
+		shpns.dealGrind(damageItem((int) Math.round(100 - shpns.sharpness), getLivingBase()));
 		saveToStack();
 	}
 	

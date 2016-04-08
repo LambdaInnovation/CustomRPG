@@ -3,9 +3,9 @@ package cn.nolifem.attributes.item;
 import java.util.List;
 
 import cn.lambdalib.s11n.SerializeIncluded;
+import cn.nolifem.api.ICalculator;
 import cn.nolifem.api.attributes.ItemAttribute;
 import net.minecraft.util.EnumChatFormatting;
-import cn.nolifem.api.IAttributeDealer;
 import cn.nolifem.util.Lang;
 
 public class MaxStackSize extends ItemAttribute implements Cloneable{
@@ -30,7 +30,7 @@ public class MaxStackSize extends ItemAttribute implements Cloneable{
 	}
 
 	@Override
-	public void addFunction(IAttributeDealer calculator) {}
+	public void addFunction(ICalculator calculator) {}
 
-	public int getPreference(){ return 1;}
+	public int getDisplayPreference(){ return 1;}
 }

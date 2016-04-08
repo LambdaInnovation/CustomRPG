@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import cn.lambdalib.annoreg.core.Registrant;
 import cn.lambdalib.util.datapart.EntityData;
 import cn.lambdalib.util.datapart.RegDataPart;
-import cn.nolifem.api.IStateContainer;
+import cn.nolifem.api.IStateBuffer;
 import cn.nolifem.api.IStateItem;
 import cn.nolifem.state.item.ItemState;
 
@@ -18,8 +18,8 @@ import cn.nolifem.state.item.ItemState;
  * @author Nolife_M
  */
 @Registrant
-@RegDataPart(value=EntityLivingBase.class)
-public class PlayerItemStateBuffer extends DataPart<EntityLivingBase> implements IStateContainer{
+@RegDataPart(value=EntityPlayer.class)
+public class PlayerItemStateBuffer extends DataPart<EntityPlayer> implements IStateBuffer {
 	
 	ItemStack weapon;
 	ItemState state;
@@ -27,7 +27,9 @@ public class PlayerItemStateBuffer extends DataPart<EntityLivingBase> implements
 	private Map<String, ItemState> statemap = new HashMap<>();
 	
 	public static PlayerItemStateBuffer get(EntityLivingBase living) {
-		PlayerItemStateBuffer part = EntityData.get(living).getPart(PlayerItemStateBuffer.class);
+		PlayerItemStateBuffer part = null;
+		if(living instanceof  EntityPlayer)
+			part = EntityData.get(living).getPart(PlayerItemStateBuffer.class);
         return part;
     }
 	
@@ -38,13 +40,7 @@ public class PlayerItemStateBuffer extends DataPart<EntityLivingBase> implements
 	public EntityPlayer getPlayer(){
     	return (EntityPlayer)this.getEntity();
     }
-	
-	/**NOT SAFE
-	 */
-	public ItemState getItemState(ItemStack stack){
-		return ((IStateItem)stack.getItem()).getState(getPlayer(), stack, this);
-	}
-	
+
 	@Override
 	public void tick(){
     	if(this.getStateMap().size() > 30){
@@ -52,7 +48,7 @@ public class PlayerItemStateBuffer extends DataPart<EntityLivingBase> implements
     	}
     	weapon = getPlayer().getHeldItem();
     	if(weapon != null && weapon.getItem() instanceof IStateItem){
-    		state = this.getItemState(weapon);
+    		state = ModuleState.get(weapon, this.getPlayer());
     		if(state.isTick())
     			state.tick();
     	}

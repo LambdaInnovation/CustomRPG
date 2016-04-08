@@ -63,12 +63,13 @@ public class CommonEventHandler {
 	@SubscribeEvent
 	public void onPlayerAttack(PlayerAttackEvent e){
 		PlayerState pstate = (PlayerState)ModuleState.get(e.entityPlayer);
-		pstate.updateAttrListForCalc();
+		pstate.updateDealedAttr();
 		EntityState tstate = ModuleState.get((EntityLivingBase)e.target);
 		double dmg = pstate.getAttackDmg();
-		dmg = tstate.reducePhyDmg(dmg);
+		System.out.println("GetDamage" + dmg);
+		dmg = tstate.reduceComingDmg(dmg);
+		System.out.println("AfterReduce" + dmg);
 		e.dmg = (float)dmg;
 		pstate.placeBuff(e);
-
 	}
 }

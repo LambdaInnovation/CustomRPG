@@ -1,5 +1,6 @@
 package cn.nolifem.state.item;
 
+import cn.nolifem.state.ModuleState;
 import io.netty.buffer.ByteBuf;
 
 import java.util.UUID;
@@ -30,27 +31,27 @@ public abstract class ItemState implements IAttributeContainer {
     public static NetS11nAdaptor<ItemState> adaptor = new NetS11nAdaptor<ItemState>() {
 		@Override
 		public void write(ByteBuf buf, ItemState obj) {
-			NetworkS11n.serializeWithHint(buf, obj.getPlayer(), EntityPlayer.class);
+			NetworkS11n.serializeWithHint(buf, obj.getLivingBase(), EntityLivingBase.class);
 			NetworkS11n.serializeWithHint(buf, obj.getStack().getItem(), Item.class);
 			NetworkS11n.serializeWithHint(buf, obj.getStack().writeToNBT(new NBTTagCompound()), NBTTagCompound.class);
 		}
 
 		@Override
 		public ItemState read(ByteBuf buf) throws ContextException {
-			EntityPlayer player = NetworkS11n.deserializeWithHint(buf, EntityPlayer.class);
+			EntityLivingBase livingBase = NetworkS11n.deserializeWithHint(buf, EntityLivingBase.class);
 			ItemStack stack = new ItemStack(NetworkS11n.deserializeWithHint(buf, Item.class));
-			stack.readFromNBT(NetworkS11n.deserializeWithHint(buf, NBTTagCompound.class)); 
-			return PlayerItemStateBuffer.get(player).getItemState(stack);
+			stack.readFromNBT(NetworkS11n.deserializeWithHint(buf, NBTTagCompound.class));
+			return ModuleState.get(stack, livingBase);
 		}
     };
 
-	EntityPlayer player;
+	EntityLivingBase livingBase;
 	ItemStack stack;
 	
 	boolean isTick;
 
-	public ItemState(EntityPlayer player, ItemStack stack){
-		this.player = player;
+	public ItemState(EntityLivingBase livingBase, ItemStack stack){
+		this.livingBase = livingBase;
 		this.stack = stack;
 		
 		this.isTick = false;
@@ -66,17 +67,55 @@ public abstract class ItemState implements IAttributeContainer {
 	
 	public void tick(){}
 
-	static String getStackID(ItemStack stack){
-		String uuid;
-		NBTTagCompound tag = getTag(stack, ModProps.TAG);
-		if(!tag.hasKey("UUID")){
-			uuid = UUID.randomUUID().toString();
-			tag.setString("UUID", uuid);
-			stack.getTagCompound().setTag(ModProps.TAG, tag);
-		}else{
-			uuid = tag.getString("UUID");
+	public static String getStackID(ItemStack stack){
+		String uuid = "nothing";
+		if(stack != null){
+			NBTTagCompound tag = getTag(stack, ModProps.TAG);
+			if(!tag.hasKey("UUID")){
+				uuid = UUID.randomUUID().toString();
+				tag.setString("UUID", uuid);
+				stack.getTagCompound().setTag(ModProps.TAG, tag);
+			}else{
+				uuid = tag.getString("UUID");
+			}
 		}
 		return uuid;
+	}
+
+	abstract void initState();
+	
+	public void setStack(ItemStack stack){
+		this.stack = stack;
+	}
+	
+	public ItemStack getStack(){
+		return this.stack;
+	}
+
+	public EntityLivingBase getLivingBase(){
+		return this.livingBase;
+	}
+
+	protected boolean isClient() {
+        return getLivingBase().worldObj.isRemote;
+    }
+	
+	//NetWork
+	protected void sendMessage(String channel, Object ...params) {
+        if (isClient()) {
+            NetworkMessage.sendToServer(this, channel, params);
+        } else {
+            NetworkMessage.sendToAllAround(TargetPointHelper.convert(getLivingBase(), 12), this, channel, params);
+        }
+    }
+
+	//DamageItem
+	public int damageItem(int amount, EntityLivingBase e){
+		int dmg = amount;
+		if(stack.getMaxDamage() - stack.getItemDamage() < amount)
+			dmg = stack.getMaxDamage() - stack.getItemDamage();
+		stack.damageItem(dmg, e);
+		return dmg;
 	}
 
 	////NBT
@@ -92,33 +131,6 @@ public abstract class ItemState implements IAttributeContainer {
 		return tag;
 	}
 
-	abstract void initState();
-	
-	public void setStack(ItemStack stack){
-		this.stack = stack;
-	}
-	
-	public ItemStack getStack(){
-		return this.stack;
-	}
-	
-	public EntityPlayer getPlayer(){
-		return this.player;
-	}
-	
-	protected boolean isClient() {
-        return getPlayer().worldObj.isRemote;
-    }
-	
-	//NetWork
-	protected void sendMessage(String channel, Object ...params) {
-        if (isClient()) {
-            NetworkMessage.sendToServer(this, channel, params);
-        } else {
-            NetworkMessage.sendToAllAround(TargetPointHelper.convert(getPlayer(), 12), this, channel, params);
-        }
-    }
-	
 	/**Call if need to read
 	 */
 	final void readFromStack(){
@@ -133,19 +145,8 @@ public abstract class ItemState implements IAttributeContainer {
 		saveToTag(tag);
 		stack.getTagCompound().setTag(this.getClass().getSimpleName(), tag);
 	}
-	
-	public int damageItem(int amount, EntityLivingBase e){
-		int dmg = amount;
-		if(stack.getMaxDamage() - stack.getItemDamage() < amount)
-			dmg = stack.getMaxDamage() - stack.getItemDamage();
-		stack.damageItem(dmg, e);
-		return dmg;
-	}
 
 	abstract void readFromTag(NBTTagCompound tag);
 	abstract void saveToTag(NBTTagCompound tag);
-	
-	private static void debug(Object msg) {
-        LambdaLib.log.info("[TestEnv]" + msg);
-    }
+
 }

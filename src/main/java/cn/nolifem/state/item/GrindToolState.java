@@ -2,9 +2,12 @@ package cn.nolifem.state.item;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 
+import cn.nolifem.state.ModuleState;
 import cpw.mods.fml.relauncher.Side;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -14,12 +17,11 @@ import net.minecraftforge.common.util.Constants;
 import cn.lambdalib.core.LambdaLib;
 import cn.lambdalib.s11n.network.NetworkMessage.Listener;
 import cn.nolifem.api.IAttributeCR;
-import cn.nolifem.api.IStateContainer;
+import cn.nolifem.api.IStateBuffer;
 import cn.nolifem.attributes.item.MaterialType;
 import cn.nolifem.gui.container.ContainerGrind;
 import cn.nolifem.items.ItemCustomMelee;
 import cn.nolifem.items.ItemCustomMisc;
-import cn.nolifem.state.PlayerItemStateBuffer;
 
 public class GrindToolState extends ItemState implements IInventory{
 	
@@ -46,15 +48,19 @@ public class GrindToolState extends ItemState implements IInventory{
 	Random r = new Random();
 
 	//State getter
-	public static GrindToolState get(EntityPlayer player, ItemStack stack, IStateContainer container){
-		String uuid = getStackID(stack);
-		GrindToolState state = (GrindToolState) container.getStateMap().get(uuid);
-		if(state == null){
-			state = new GrindToolState(player, stack);
-			container.getStateMap().put(uuid, state);
+	public static Optional<GrindToolState> get(EntityLivingBase living, ItemStack stack, IStateBuffer buffer){
+		Optional<GrindToolState> state = Optional.ofNullable(null);
+		if(living instanceof  EntityPlayer){
+			String uuid = getStackID(stack);
+			state = Optional.ofNullable( (GrindToolState) buffer.getStateMap().get(uuid) );
+			if(!state.isPresent()){
+				state = Optional.of( new GrindToolState((EntityPlayer)living, stack) );
+				buffer.getStateMap().put(uuid, state.get());
+			}
+			state.get().setStack(stack);
 		}
-		state.setStack(stack);
-		return state;	
+		System.out.println("WARN! Wrong Grind State Request");
+		return state;
 	}
 	
 	
@@ -146,7 +152,7 @@ public class GrindToolState extends ItemState implements IInventory{
 	
 	public void startGrind(){
 		if(isClient())
-			getPlayer().playSound("minecraft:random.click", 1.0f, 1.0f);
+			getLivingBase().playSound("minecraft:random.click", 1.0f, 1.0f);
 		ItemStack hone = this.getStackInSlot(SLOT_HONE_IN);
 		if(this.getStackInSlot(SLOT_SWORD_IN) != null && hone != null && hone.stackSize > 0 && this.getStackInSlot(SLOT_SWORD_OUT) == null){
 			hone.stackSize--;
@@ -156,9 +162,9 @@ public class GrindToolState extends ItemState implements IInventory{
 	}
 	
 	public void endGrind(){
-		ItemStack stack = this.getStackInSlot(SLOT_SWORD_IN);
-		if(this.grinding && stack != null && stack.getItem() instanceof ItemCustomMelee){
-			MeleeState mstate = (MeleeState) PlayerItemStateBuffer.get(getPlayer()).getItemState(stack);
+		ItemStack grinded = this.getStackInSlot(SLOT_SWORD_IN);
+		if(this.grinding && grinded != null && grinded.getItem() instanceof ItemCustomMelee){
+			MeleeState mstate = (MeleeState) ModuleState.get(grinded, this.getLivingBase());
 			System.out.println("pro:" + progress);
 			System.out.println("mrk:" + markpos);
 			if(progress >= markpos - 0.5 && progress <= markpos + 0.5){
@@ -171,7 +177,7 @@ public class GrindToolState extends ItemState implements IInventory{
 				System.out.println("Fine Grinded!");
 				mstate.dealGrind(2);
 			}
-			this.setInventorySlotContents(SLOT_SWORD_OUT, stack);
+			this.setInventorySlotContents(SLOT_SWORD_OUT, grinded);
 			this.setInventorySlotContents(SLOT_SWORD_IN, null);	
 		}
 		this.grinding = false;

@@ -6,7 +6,7 @@ import java.util.Map;
 import cn.nolifem.state.item.ItemState;
 import net.minecraft.item.ItemStack;
 
-public interface IStateContainer{
+public interface IStateBuffer {
 
 	public Map<String, ItemState> getStateMap();
 }

@@ -3,8 +3,9 @@ package cn.nolifem.attributes.item;
 import java.util.List;
 
 import cn.lambdalib.s11n.SerializeIncluded;
-import cn.nolifem.api.IAttributeDealer;
+import cn.nolifem.api.ICalculator;
 import cn.nolifem.api.attributes.ItemAttribute;
+import cn.nolifem.core.ModProps;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
 import cn.nolifem.attributes.general.PhysicalDamage;
@@ -53,9 +54,9 @@ public class Sharpness extends ItemAttribute implements Cloneable{
 	}
 
 	@Override
-	public void addFunction(IAttributeDealer calculator) {
-		calculator.<Double>addFunctionPAI(PhysicalDamage.class.getSimpleName(), (input) -> input * (1.0 + sharpness/250.0 - 0.2 ));
+	public void addFunction(ICalculator calculator) {
+		calculator.<Double>addFunction(PAI, PhysicalDamage.class.getSimpleName(), (input) -> input * (1.0 + sharpness/250.0 - 0.2 ));
 	}
 
-	public int getPreference(){ return 0;}
+	public int getDisplayPreference(){ return 0;}
 }

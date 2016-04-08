@@ -1,8 +1,9 @@
-package cn.nolifem.attributes.effect.buffplacer;
+package cn.nolifem.attributes.effect.buffPlacer;
 
-import cn.nolifem.api.IAttributeDealer;
+import cn.lambdalib.s11n.SerializeIncluded;
 import cn.nolifem.api.attributes.BuffPlacer;
 import cn.nolifem.event.PlayerAttackEvent;
+import cn.nolifem.state.EntityState;
 import cn.nolifem.util.Lang;
 import net.minecraft.util.EnumChatFormatting;
 
@@ -13,7 +14,8 @@ import java.util.List;
  */
 public class HealthStealth extends BuffPlacer {
 
-    private double percent = 0;
+    @SerializeIncluded
+    private double percent = 0.0;
 
     public void place(PlayerAttackEvent e){
         System.out.println("DMG:" + e.dmg);
@@ -29,14 +31,18 @@ public class HealthStealth extends BuffPlacer {
 
     @Override
     public void addInfo(List arraylist) {
-        arraylist.add(EnumChatFormatting.DARK_GREEN +  Lang.translateFormatted(super.getLang(), (this.percent*100 + "%")));
+        arraylist.add(EnumChatFormatting.DARK_GREEN +  Lang.translateFormatted(super.getLang(), (this.percent*100.0 + "%")));
     }
-
-    public int getPreference(){ return 4;}
 
     @Override
-    public void addFunction(IAttributeDealer calculator) {
-
+    public <T> void addToDealer(T dealer){
+        if(dealer instanceof EntityState){
+            ((EntityState) dealer).addBuffPlacer(this);
+        }
     }
+    public int getDisplayPreference(){ return 3;}
+
+    @Override
+    public int getApplyPreference() { return 0; }
 }
 
