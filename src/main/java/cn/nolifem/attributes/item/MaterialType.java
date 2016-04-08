@@ -2,17 +2,16 @@ package cn.nolifem.attributes.item;
 
 import java.util.List;
 
+import cn.nolifem.api.IAttributeDealer;
 import net.minecraft.util.EnumChatFormatting;
-import cn.nolifem.api.IAttributeCalculator;
-import cn.nolifem.attributes.BaseAttributeCR;
 import cn.nolifem.util.Lang;
 
-public class MaterialType extends BaseAttributeCR implements Cloneable{
+public class MaterialType extends ItemAttribute implements Cloneable{
 	
 	private String value;
 	
 	public MaterialType(){
-		setTag();
+		super();
 	}
 		
 	public String getValue() {
@@ -29,7 +28,7 @@ public class MaterialType extends BaseAttributeCR implements Cloneable{
 	}
 
 	@Override
-	public void addCalc(IAttributeCalculator calculator) {}
+	public void addFunction(IAttributeDealer calculator) {}
 
 	public int getPreference(){ return 1;}
 }

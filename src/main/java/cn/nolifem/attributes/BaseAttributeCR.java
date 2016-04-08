@@ -2,11 +2,7 @@ package cn.nolifem.attributes;
 
 import java.util.List;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.nbt.NBTTagCompound;
 import cn.nolifem.api.IAttributeCR;
-import cn.nolifem.api.IAttributeCalculator;
-import cn.nolifem.api.IAttributeContainer;
 
 /**Base Attribute
  * @author Nolife_M
@@ -17,10 +13,6 @@ public abstract class BaseAttributeCR implements IAttributeCR, Cloneable{
 	
 	public BaseAttributeCR(){}
 
-	public void setTag(){
-		this.isTag = true;
-	}
-	
 	public IAttributeCR getClone(){
 		try {
 			return (IAttributeCR) this.clone();
@@ -29,7 +21,11 @@ public abstract class BaseAttributeCR implements IAttributeCR, Cloneable{
 		}
 		return null;
 	}
-	
+
+	public void setTag(){
+		this.isTag = true;
+	}
+
 	public boolean isTag(){
 		return this.isTag;
 	}

@@ -2,15 +2,13 @@ package cn.nolifem.attributes.item;
 
 import java.util.List;
 
+import cn.nolifem.api.IAttributeDealer;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
-import cn.nolifem.api.IAttributeCalculator;
-import cn.nolifem.attributes.BaseAttributeCR;
 import cn.nolifem.attributes.general.PhysicalDamage;
 import cn.nolifem.util.Lang;
 
-public class Sharpness extends BaseAttributeCR implements Cloneable{
+public class Sharpness extends ItemAttribute implements Cloneable{
 	
 	public double sharpness = 100;
 	public double sharpnessDecrease = 2;
@@ -18,9 +16,7 @@ public class Sharpness extends BaseAttributeCR implements Cloneable{
 	private int MAXSHARPNESS = 100;
 	private double GRINDDAMAGE = 1;
 	
-	public Sharpness(){
-		setTag();
-	}
+	public Sharpness(){super();}
 	
 	@Override
 	public void addInfo(List arraylist){
@@ -53,8 +49,8 @@ public class Sharpness extends BaseAttributeCR implements Cloneable{
 	}
 
 	@Override
-	public void addCalc(IAttributeCalculator calculator) {
-		calculator.<Double>addCalculationPAI(PhysicalDamage.class.getSimpleName(), (input) -> input * (1.0 + sharpness/250.0 - 0.2 ));
+	public void addFunction(IAttributeDealer calculator) {
+		calculator.<Double>addFunctionPAI(PhysicalDamage.class.getSimpleName(), (input) -> input * (1.0 + sharpness/250.0 - 0.2 ));
 	}
 
 	public int getPreference(){ return 0;}

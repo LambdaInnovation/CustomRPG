@@ -2,12 +2,12 @@ package cn.nolifem.attributes.general;
 
 import java.util.List;
 
+import cn.nolifem.api.IAttributeDealer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.util.EnumChatFormatting;
 import cn.nolifem.api.IAttributeCR;
-import cn.nolifem.api.IAttributeCalculator;
 import cn.nolifem.api.IOriginalModifier;
 import cn.nolifem.attributes.player.Strength;
 import cn.nolifem.util.Lang;
@@ -15,8 +15,8 @@ import cn.nolifem.util.Lang;
 public class Health extends GeneralAttribute implements Cloneable, IOriginalModifier{
 	
 	@Override
-	public void addCalc(IAttributeCalculator calculator) {
-		calculator.<Double>addCalculationSIGMA(this.getClass().getSimpleName(), (input) -> input + this.getValue());
+	public void addFunction(IAttributeDealer calculator) {
+		calculator.<Double>addFunctionSIGMA(this.getClass().getSimpleName(), (input) -> input + this.getValue());
 	}
 
 	@Override
@@ -25,9 +25,9 @@ public class Health extends GeneralAttribute implements Cloneable, IOriginalModi
 	}
 
 	@Override
-	public void applyOriginalModify(IAttributeCalculator calculator, EntityLivingBase living){	
+	public void applyOriginalModify(IAttributeDealer calculator, EntityLivingBase living){
 		IAttributeInstance attr = living.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth);
-		attr.setBaseValue(calculator.applyCalc(this.getClass().getSimpleName(), 0.0D));
+		attr.setBaseValue(calculator.calc(this.getClass().getSimpleName(), 0.0D));
 	}
 	
 	@Override

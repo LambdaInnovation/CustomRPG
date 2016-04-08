@@ -1,10 +1,9 @@
-package cn.nolifem.attributes.effect;
+package cn.nolifem.attributes.effect.buffplacer;
 
-import cn.nolifem.api.IAttributeCalculator;
-import cn.nolifem.attributes.BaseAttributeCR;
+import cn.nolifem.api.IAttributeDealer;
+import cn.nolifem.attributes.effect.BuffPlacer;
 import cn.nolifem.event.PlayerAttackEvent;
 import cn.nolifem.util.Lang;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.EnumChatFormatting;
 
 import java.util.List;
@@ -12,11 +11,11 @@ import java.util.List;
 /**
  * Created by Nolife_M on 2016/3/28.
  */
-public class HealthStealth extends AttackEffect {
+public class HealthStealth extends BuffPlacer {
 
     private double percent = 0;
 
-    public void applyEffect(PlayerAttackEvent e){
+    public void place(PlayerAttackEvent e){
         System.out.println("DMG:" + e.dmg);
         System.out.println("Stealth Percent:" + percent);
         double amount = e.dmg * percent;
@@ -36,7 +35,7 @@ public class HealthStealth extends AttackEffect {
     public int getPreference(){ return 4;}
 
     @Override
-    public void addCalc(IAttributeCalculator calculator) {
+    public void addFunction(IAttributeDealer calculator) {
 
     }
 }

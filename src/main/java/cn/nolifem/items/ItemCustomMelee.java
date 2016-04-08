@@ -1,11 +1,9 @@
 package cn.nolifem.items;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
+import cn.nolifem.state.ModuleState;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -57,8 +55,8 @@ public class ItemCustomMelee extends ItemSword implements IAttributeContainer, I
 		
 	/////hit dealing
     public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity){
-    	PlayerState state = PlayerState.get(player);
-		if(state.attackCD > 0)			
+		PlayerState state = (PlayerState) ModuleState.get(player);
+		if(state.attackCD > 0)
 			return true;
 		else
 			entity.hurtResistantTime = 0;

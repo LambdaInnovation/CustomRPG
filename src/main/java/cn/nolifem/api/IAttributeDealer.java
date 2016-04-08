@@ -9,28 +9,33 @@ import java.util.Optional;
 import java.util.Map.Entry;
 import java.util.function.Function;
 
+import cn.nolifem.attributes.effect.BuffPlacer;
+import cn.nolifem.attributes.effect.Effect;
 import cn.nolifem.attributes.general.PhysicalDamage;
 
 
-/**Interface use for store attributes, and apply calc;
+/**Interface use for store attributes, and place calc;
  */
-public interface IAttributeCalculator {
-	
+public interface IAttributeDealer {
+
+	//Effect part
+	public List<BuffPlacer> getBuffPlacerList();
+	public List<Effect> getEffectList();
+
+	//Calculate part
 	public List<IAttributeCR> getAttrListForCalc();
 	
 	public Map<String, List<Function>> getCalcMapSIGMA();
 	public Map<String, List<Function>> getCalcMapPAI();
-	
-	public default void addAttrForCalc(IAttributeCR attr){
-		this.getAttrListForCalc().add(attr);
-		attr.addCalc(this);
-	}
 
-	public default boolean hasCalcList(String key){
+	public default boolean hasSIGMAkey(String key){
 		return this.getCalcMapSIGMA().get(key) != null;
 	}
+	public default boolean hasPAIkey(String key){
+		return this.getCalcMapPAI().get(key) != null;
+	}
 	
-	public default <S> void addCalculationSIGMA(String key, Function<S, S> calc){
+	public default <S> void addFunctionSIGMA(String key, Function<S, S> calc){
 		List<Function> list = this.getCalcMapSIGMA().get(key);
 		if(list == null){
 			list = new ArrayList<>();
@@ -39,7 +44,7 @@ public interface IAttributeCalculator {
 		list.add(calc);
 	}
 	
-	public default <S> void addCalculationPAI(String key, Function<S, S> calc){
+	public default <S> void addFunctionPAI(String key, Function<S, S> calc){
 		List<Function> list = this.getCalcMapPAI().get(key);
 		if(list == null){
 			list = new ArrayList<>();
@@ -48,14 +53,15 @@ public interface IAttributeCalculator {
 		list.add(calc);
 	}
 	
-	public default <T> T applyCalc(String key, T value){
-		//SIGMA
+	public default <T> T calc(String key, T value){
+		//TEST
 		String str = "CriticalRate";
 		if(key.equals(str))
 			System.out.println("now appling" + key);
-		Optional<List<Function>> listSIGMA = Optional.ofNullable(this.getCalcMapSIGMA().get(key));
-		if(listSIGMA.isPresent()){
-			for(Function _f : listSIGMA.get()){
+		//SIGMA
+		List<Function> listSIGMA = this.getCalcMapSIGMA().get(key);
+		if(listSIGMA != null){
+			for(Function _f : listSIGMA){
 				Function<T, T>f = (Function<T, T>) _f;
 				value = f.apply(value);
 				if(key.equals(str))
@@ -64,10 +70,11 @@ public interface IAttributeCalculator {
 		}
 		if(key.equals(str))
 			System.out.println("SIGEMA" + value);
+
 		//PAI
-		Optional<List<Function>> listPAI = Optional.ofNullable(this.getCalcMapPAI().get(key));
-		if(listPAI.isPresent()){
-			for(Function _f : listPAI.get()){
+		List<Function> listPAI = this.getCalcMapPAI().get(key);
+		if(listPAI != null){
+			for(Function _f : listPAI){
 				Function<T, T>f = (Function<T, T>) _f;
 				value = f.apply(value);
 			}

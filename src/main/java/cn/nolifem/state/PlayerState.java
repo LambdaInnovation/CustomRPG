@@ -1,12 +1,11 @@
 package cn.nolifem.state;
 
 import cn.lambdalib.annoreg.core.Registrant;
-import cn.lambdalib.util.datapart.EntityData;
 import cn.lambdalib.util.datapart.RegDataPart;
 import cn.lambdalib.util.mc.ControlOverrider;
 import cn.nolifem.CustomRPG;
 import cn.nolifem.api.*;
-import cn.nolifem.attributes.effect.AttackEffect;
+import cn.nolifem.attributes.effect.BuffPlacer;
 import cn.nolifem.attributes.general.*;
 import cn.nolifem.attributes.player.Dexterity;
 import cn.nolifem.attributes.player.PlayerAttribute;
@@ -16,7 +15,6 @@ import cn.nolifem.event.PlayerAttackEvent;
 import cn.nolifem.state.item.ItemState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -27,7 +25,7 @@ import java.util.function.Function;
 
 @Registrant
 @RegDataPart(value=EntityPlayer.class)
-public class PlayerState extends EntityState implements IAttributeContainer, IAttributeCalculator{
+public class PlayerState extends EntityState implements IAttributeContainer, IAttributeDealer {
 	
 	private int respawnUpdateTick = 10;
 
@@ -40,7 +38,8 @@ public class PlayerState extends EntityState implements IAttributeContainer, IAt
 	private Map<String, List<Function>> calcPAI = new HashMap<>();
 	
 	private List<IAttributeCR> attrList = new ArrayList<>();
-    private List<IAttributeCR> effectList = new ArrayList<>();
+    private List<IAttributeCR> buffPlacerList = new ArrayList<>();
+	private List<IAttributeCR> buffList = new ArrayList<>();
 	
 	private final Class[] playerAttrs = new Class[]{
 		Strength.class,
@@ -60,13 +59,6 @@ public class PlayerState extends EntityState implements IAttributeContainer, IAt
 			CriticalMulti.class,
 	};
 
-	/** NOT SAFE! stack's item must implements {@link cn.nolifem.api.IStateItem}, or Booooom
-	 */	
-    public static PlayerState get(EntityLivingBase living) {
-    	PlayerState part = EntityData.get(living).getPart(PlayerState.class);
-        return part;
-    }
-    
 	@Override
 	public void initAttr() {
 		try {
@@ -125,42 +117,50 @@ public class PlayerState extends EntityState implements IAttributeContainer, IAt
      * @return
      */
     public double getFinalValue(Class<? extends GeneralAttribute> clazz){
-    	return this.applyCalc(clazz.getSimpleName(), 0.0D);
+    	return this.calc(clazz.getSimpleName(), 0.0D);
     }
-    
-    public void updateAttrListForCalc(){
-    	this.getAttrListForCalc().clear();
-    	this.getCalcMapSIGMA().clear();
+
+	private void cleanAll(){
+		this.getAttrListForCalc().clear();
+		this.getCalcMapSIGMA().clear();
 		this.getCalcMapPAI().clear();
-        this.effectList.clear();
-    	
+		this.buffPlacerList.clear();
+		this.buffList.clear();
+	}
+
+    public void updateAttrListForCalc(){
+		cleanAll();
+
+		//add player attrs
     	for(IAttributeCR attr : this.getAttrMapAsList()){
-    		this.addAttrForCalc(attr);
-            if(attr instanceof AttackEffect)
-                this.effectList.add(attr);
+			attr.addToDealer(this);
+    		/*this.getAttrListForCalc().add(attr);
+            if(attr instanceof BuffPlacer)
+                this.buffPlacerList.add(attr);
     		if(attr instanceof IOriginalModifier)
-    			((IOriginalModifier) attr).applyOriginalModify(this, this.getPlayer());
+    			((IOriginalModifier) attr).applyOriginalModify(this, this.getPlayer());*/
     	}
 
+		//add equipments attrs
     	ItemStack equipment;
     	for(int i=0; i < 5; i++){
     		equipment = getPlayer().getEquipmentInSlot(i);
     		if(equipment != null && equipment.getItem() instanceof IStateItem){
     			ItemState state = PlayerItemState.get(getPlayer()).getItemState(equipment);
     			for(IAttributeCR attr : state.getAttrMapAsList()){
-    				this.addAttrForCalc(attr);
-                    if(attr instanceof AttackEffect)
-                        this.effectList.add(attr);
+					attr.addToDealer(this);
+    				/*this.getAttrListForCalc().add(attr);
+                    if(attr instanceof BuffPlacer)
+                        this.buffPlacerList.add(attr);
     				if(attr instanceof IOriginalModifier)
-    					((IOriginalModifier) attr).applyOriginalModify(this, this.getPlayer());
+    					((IOriginalModifier) attr).applyOriginalModify(this, this.getPlayer());*/
     	    	}
     		}
-    	}
-
-		//System.out.println(this.getAttrListForCalc());
+    	};
     }   
 
     //Deal Attacking
+	@Override
     public boolean readyToAttack(){
     	return attackCD == 0;
     }
@@ -191,12 +191,19 @@ public class PlayerState extends EntityState implements IAttributeContainer, IAt
 		return dmg;
 	}
 
-    public void applyAttackEffect(PlayerAttackEvent e){
-        System.out.println("applyingEffect");
-        for(IAttributeCR effect : effectList){
-            ((AttackEffect)effect).applyEffect(e);
-        }
-    }
+    public void applyBuffPlacer(PlayerAttackEvent e){
+		System.out.println("applyingEffect");
+		for(IAttributeCR effect : buffPlacerList){
+			((BuffPlacer)effect).place(e);
+		}
+	}
+
+	public void applyBuff(PlayerAttackEvent e){
+		System.out.println("applyingEffect");
+		for(IAttributeCR effect : buffPlacerList){
+			((BuffPlacer)effect).place(e);
+		}
+	}
 
 	//Defence
 	public double reducePhyDmg(double dmg) {
@@ -244,4 +251,5 @@ public class PlayerState extends EntityState implements IAttributeContainer, IAt
 	public Map<String, List<Function>> getCalcMapPAI() {
 		return this.calcPAI;
 	}
+
 }

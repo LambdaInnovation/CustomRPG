@@ -2,20 +2,17 @@ package cn.nolifem.attributes.general;
 
 import java.util.List;
 
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import cn.nolifem.api.IAttributeCR;
-import cn.nolifem.api.IAttributeCalculator;
-import cn.nolifem.api.IAttributeContainer;
-import cn.nolifem.attributes.BaseAttributeCR;
+import cn.nolifem.api.IAttributeDealer;
 import cn.nolifem.attributes.player.Proficient;
 import cn.nolifem.util.Lang;
 
 public class CriticalRate extends GeneralAttribute implements Cloneable{
 	
 	@Override
-	public void addCalc(IAttributeCalculator calculator) {
-		calculator.<Double>addCalculationSIGMA(this.getClass().getSimpleName(), (input) -> input + this.getValue());
+	public void addFunction(IAttributeDealer calculator) {
+		calculator.<Double>addFunctionSIGMA(this.getClass().getSimpleName(), (input) -> input + this.getValue());
 	}
 
 	@Override

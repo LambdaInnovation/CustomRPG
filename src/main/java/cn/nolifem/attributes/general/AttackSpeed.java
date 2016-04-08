@@ -2,20 +2,17 @@ package cn.nolifem.attributes.general;
 
 import java.util.List;
 
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import cn.nolifem.api.IAttributeCR;
-import cn.nolifem.api.IAttributeCalculator;
-import cn.nolifem.api.IAttributeContainer;
-import cn.nolifem.attributes.BaseAttributeCR;
+import cn.nolifem.api.IAttributeDealer;
 import cn.nolifem.attributes.player.Dexterity;
 import cn.nolifem.util.Lang;
 
 public class AttackSpeed extends GeneralAttribute implements Cloneable{
 
 	@Override
-	public void addCalc(IAttributeCalculator calculator) {
-		calculator.<Double>addCalculationSIGMA(this.getClass().getSimpleName(), (input) -> input * 20.0d/(1.0D + this.getValue()));
+	public void addFunction(IAttributeDealer calculator) {
+		calculator.<Double>addFunctionSIGMA(this.getClass().getSimpleName(), (input) -> input * 20.0d/(1.0D + this.getValue()));
 	}
 	
 	@Override

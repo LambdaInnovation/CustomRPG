@@ -1,11 +1,7 @@
 package cn.nolifem.attributes.general;
 
-import net.minecraft.entity.EntityLivingBase;
 import cn.nolifem.api.IAttributeCR;
-import cn.nolifem.api.IAttributeCalculator;
-import cn.nolifem.api.IAttributeContainer;
 import cn.nolifem.attributes.BaseAttributeCR;
-import cn.nolifem.attributes.player.PlayerAttribute;
 
 /**Simple Attribute with one value
  * @author Nolife_M

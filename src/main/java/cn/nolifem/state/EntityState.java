@@ -12,12 +12,7 @@ import cn.lambdalib.util.datapart.RegDataPart;
 @Registrant
 @RegDataPart(value=EntityLivingBase.class)
 public class EntityState extends DataPart<EntityLivingBase> {
-	
-    public static EntityState get(EntityLivingBase living) {
-    	EntityState part = EntityData.get(living).getPart(EntityState.class);
-        return part;
-    }
-    
+
     public EntityState() {
 		setTick(true);
 	}
@@ -29,6 +24,10 @@ public class EntityState extends DataPart<EntityLivingBase> {
     public void fromNBT(NBTTagCompound tag) {}
     
     public void toNBT(NBTTagCompound tag) {}
+
+	public boolean readyToAttack(){
+		return true;
+	}
 
 	public double getAttackDmg() {
 		IAttributeInstance attr = getEntity().getAttributeMap().getAttributeInstance(SharedMonsterAttributes.attackDamage);

@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.Map.Entry;
 
 
-/**Interface use for store attributes, and apply calc;
+/**Interface use for store attributes, and place calc;
  */
 public interface IAttributeContainer {
 	

@@ -6,8 +6,8 @@ import cn.nolifem.event.PlayerAttackEvent;
 /**
  * Created by Nolife_M on 2016/3/28.
  */
-public abstract class AttackEffect extends BaseAttributeCR {
+public abstract class BuffPlacer extends BaseAttributeCR {
 
-    public abstract void applyEffect(PlayerAttackEvent e);
+    public abstract void place(PlayerAttackEvent e);
 }
 

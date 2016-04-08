@@ -1,7 +1,6 @@
 package cn.nolifem.attributes.general;
 
 import java.util.List;
-import java.util.UUID;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -9,7 +8,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.util.EnumChatFormatting;
 import cn.nolifem.api.IAttributeCR;
-import cn.nolifem.api.IAttributeCalculator;
+import cn.nolifem.api.IAttributeDealer;
 import cn.nolifem.api.IOriginalModifier;
 import cn.nolifem.attributes.player.Dexterity;
 import cn.nolifem.util.Lang;
@@ -17,8 +16,8 @@ import cn.nolifem.util.Lang;
 public class MovementSpeed extends GeneralAttribute implements Cloneable, IOriginalModifier{
 	
 	@Override
-	public void addCalc(IAttributeCalculator calculator) {
-		calculator.<Double>addCalculationSIGMA(this.getClass().getSimpleName(), (input) -> input + this.getValue());
+	public void addFunction(IAttributeDealer calculator) {
+		calculator.<Double>addFunctionSIGMA(this.getClass().getSimpleName(), (input) -> input + this.getValue());
 	}
 	
 	@Override	
@@ -27,10 +26,10 @@ public class MovementSpeed extends GeneralAttribute implements Cloneable, IOrigi
 	}
 
 	@Override
-	public void applyOriginalModify(IAttributeCalculator calculator, EntityLivingBase living){
+	public void applyOriginalModify(IAttributeDealer calculator, EntityLivingBase living){
 		IAttributeInstance attr = living.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.movementSpeed);
 		AttributeModifier modifier = new AttributeModifier(SPEED_MODIFIER, "speed_up", 
-				calculator.applyCalc(this.getClass().getSimpleName(), 0.0D), 1);
+				calculator.calc(this.getClass().getSimpleName(), 0.0D), 1);
 		if(attr.getModifier(SPEED_MODIFIER) != null)
 			attr.removeModifier(modifier);
 		attr.applyModifier(modifier);
