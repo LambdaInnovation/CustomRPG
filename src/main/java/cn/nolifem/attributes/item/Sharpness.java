@@ -2,7 +2,9 @@ package cn.nolifem.attributes.item;
 
 import java.util.List;
 
+import cn.lambdalib.s11n.SerializeIncluded;
 import cn.nolifem.api.IAttributeDealer;
+import cn.nolifem.api.attributes.ItemAttribute;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
 import cn.nolifem.attributes.general.PhysicalDamage;
@@ -12,8 +14,10 @@ public class Sharpness extends ItemAttribute implements Cloneable{
 	
 	public double sharpness = 100;
 	public double sharpnessDecrease = 2;
-	
+
+	@SerializeIncluded
 	private int MAXSHARPNESS = 100;
+	@SerializeIncluded
 	private double GRINDDAMAGE = 1;
 	
 	public Sharpness(){super();}

@@ -19,7 +19,7 @@ import cn.nolifem.attributes.item.MaterialType;
 import cn.nolifem.gui.container.ContainerGrind;
 import cn.nolifem.items.ItemCustomMelee;
 import cn.nolifem.items.ItemCustomMisc;
-import cn.nolifem.state.PlayerItemState;
+import cn.nolifem.state.PlayerItemStateBuffer;
 
 public class GrindToolState extends ItemState implements IInventory{
 	
@@ -158,7 +158,7 @@ public class GrindToolState extends ItemState implements IInventory{
 	public void endGrind(){
 		ItemStack stack = this.getStackInSlot(SLOT_SWORD_IN);
 		if(this.grinding && stack != null && stack.getItem() instanceof ItemCustomMelee){
-			MeleeState mstate = (MeleeState) PlayerItemState.get(getPlayer()).getItemState(stack);
+			MeleeState mstate = (MeleeState) PlayerItemStateBuffer.get(getPlayer()).getItemState(stack);
 			System.out.println("pro:" + progress);
 			System.out.println("mrk:" + markpos);
 			if(progress >= markpos - 0.5 && progress <= markpos + 0.5){

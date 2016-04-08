@@ -16,26 +16,28 @@ public class EntityState extends DataPart<EntityLivingBase> {
     public EntityState() {
 		setTick(true);
 	}
-    
-    public void tick() {}
+
+    public void tick(){}
     
     public void updateAttrListForCalc(){}
 
-    public void fromNBT(NBTTagCompound tag) {}
-    
-    public void toNBT(NBTTagCompound tag) {}
-
-	public boolean readyToAttack(){
+	//Attack
+	public boolean isReadyToAttack(){
 		return true;
 	}
 
+	//Damage
 	public double getAttackDmg() {
 		IAttributeInstance attr = getEntity().getAttributeMap().getAttributeInstance(SharedMonsterAttributes.attackDamage);
 		System.out.println("get Dmg" + attr.getAttributeValue());
 		return attr.getAttributeValue();
 	}
-	
+	//Defence
 	public double reducePhyDmg(double dmg) {
 		return dmg;
 	}
+
+	public void fromNBT(NBTTagCompound tag) {}
+
+	public void toNBT(NBTTagCompound tag) {}
 }

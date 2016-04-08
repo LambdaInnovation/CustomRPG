@@ -3,6 +3,7 @@ package cn.nolifem.attributes.general;
 import java.util.List;
 
 import cn.nolifem.api.IAttributeDealer;
+import cn.nolifem.api.attributes.GeneralAttribute;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;

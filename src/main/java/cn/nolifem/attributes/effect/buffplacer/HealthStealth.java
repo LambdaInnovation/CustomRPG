@@ -1,7 +1,7 @@
 package cn.nolifem.attributes.effect.buffplacer;
 
 import cn.nolifem.api.IAttributeDealer;
-import cn.nolifem.attributes.effect.BuffPlacer;
+import cn.nolifem.api.attributes.BuffPlacer;
 import cn.nolifem.event.PlayerAttackEvent;
 import cn.nolifem.util.Lang;
 import net.minecraft.util.EnumChatFormatting;

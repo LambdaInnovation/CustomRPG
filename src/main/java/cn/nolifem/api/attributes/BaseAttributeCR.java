@@ -1,7 +1,8 @@
-package cn.nolifem.attributes;
+package cn.nolifem.api.attributes;
 
 import java.util.List;
 
+import cn.lambdalib.s11n.SerializeIncluded;
 import cn.nolifem.api.IAttributeCR;
 
 /**Base Attribute
@@ -9,18 +10,10 @@ import cn.nolifem.api.IAttributeCR;
  */
 public abstract class BaseAttributeCR implements IAttributeCR, Cloneable{
 
+	@SerializeIncluded
 	private boolean isTag = false;
 	
 	public BaseAttributeCR(){}
-
-	public IAttributeCR getClone(){
-		try {
-			return (IAttributeCR) this.clone();
-		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
 
 	public void setTag(){
 		this.isTag = true;

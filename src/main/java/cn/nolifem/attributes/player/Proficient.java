@@ -3,6 +3,7 @@ package cn.nolifem.attributes.player;
 import java.util.List;
 
 import cn.nolifem.api.IAttributeDealer;
+import cn.nolifem.api.attributes.PlayerAttribute;
 import cn.nolifem.attributes.general.CriticalMulti;
 import cn.nolifem.attributes.general.CriticalRate;
 import cn.nolifem.attributes.general.PrepareSpeed;

@@ -3,6 +3,7 @@ package cn.nolifem.attributes.player;
 import java.util.List;
 
 import cn.nolifem.api.IAttributeDealer;
+import cn.nolifem.api.attributes.PlayerAttribute;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;

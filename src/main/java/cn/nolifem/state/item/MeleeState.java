@@ -2,21 +2,18 @@ package cn.nolifem.state.item;
 
 import java.util.*;
 
-import scala.reflect.internal.Trees.This;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.StatCollector;
 import cn.nolifem.api.IAttributeCR;
 import cn.nolifem.api.IAttributeContainer;
 import cn.nolifem.api.IStateContainer;
-import cn.nolifem.attributes.BaseAttributeCR;
+import cn.nolifem.api.attributes.BaseAttributeCR;
 import cn.nolifem.attributes.Material;
 import cn.nolifem.attributes.general.PhysicalDamage;
 import cn.nolifem.attributes.item.MaterialType;
 import cn.nolifem.attributes.item.Sharpness;
-import cn.nolifem.core.ModProps;
 
 public class MeleeState extends ItemState implements IAttributeContainer {
 	
@@ -58,16 +55,7 @@ public class MeleeState extends ItemState implements IAttributeContainer {
 			System.out.println(this.getAttrMapAsList());
 		}
 	}
-	
-	void readFromTag(NBTTagCompound tag){
-		if(tag.hasKey("Sharpness"))
-			((Sharpness)getAttr(Sharpness.class)).sharpness = tag.getDouble("Sharpness");
-	}
 
-	void saveToTag(NBTTagCompound tag){
-		tag.setDouble("Sharpness", ((Sharpness)getAttr(Sharpness.class)).sharpness);
-	}
-	
 	//info
 	public void addInfo(List arraylist){
 		//add State info
@@ -102,12 +90,23 @@ public class MeleeState extends ItemState implements IAttributeContainer {
 		stack.damageItem(dmg, e);
 		return dmg*STEP;
 	}
-	
+
+	//S/L
+	void readFromTag(NBTTagCompound tag){
+		if(tag.hasKey("Sharpness"))
+			((Sharpness)getAttr(Sharpness.class)).sharpness = tag.getDouble("Sharpness");
+	}
+
+	void saveToTag(NBTTagCompound tag){
+		tag.setDouble("Sharpness", ((Sharpness)getAttr(Sharpness.class)).sharpness);
+	}
+
+	//Interface
+	@Override
+	public void initAttr() {}
+
 	@Override
 	public Map<String, IAttributeCR> getAttrMap() {
 		return this.attrMaps;
 	}
-
-	@Override
-	public void initAttr() {}
 }

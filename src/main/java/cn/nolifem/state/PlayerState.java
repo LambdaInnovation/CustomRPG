@@ -5,10 +5,13 @@ import cn.lambdalib.util.datapart.RegDataPart;
 import cn.lambdalib.util.mc.ControlOverrider;
 import cn.nolifem.CustomRPG;
 import cn.nolifem.api.*;
-import cn.nolifem.attributes.effect.BuffPlacer;
+import cn.nolifem.api.attributes.BuffPlacer;
+import cn.nolifem.api.attributes.Effect;
+import cn.nolifem.api.attributes.GeneralAttribute;
+import cn.nolifem.api.util.SortAttribute;
 import cn.nolifem.attributes.general.*;
 import cn.nolifem.attributes.player.Dexterity;
-import cn.nolifem.attributes.player.PlayerAttribute;
+import cn.nolifem.api.attributes.PlayerAttribute;
 import cn.nolifem.attributes.player.Proficient;
 import cn.nolifem.attributes.player.Strength;
 import cn.nolifem.event.PlayerAttackEvent;
@@ -36,28 +39,25 @@ public class PlayerState extends EntityState implements IAttributeContainer, IAt
 	private Map<String, IAttributeCR> playerAttrMap = new HashMap<>();
 	private Map<String, List<Function>> calcMapSIGMA = new HashMap<>();
 	private Map<String, List<Function>> calcPAI = new HashMap<>();
+
 	
 	private List<IAttributeCR> attrList = new ArrayList<>();
-    private List<IAttributeCR> buffPlacerList = new ArrayList<>();
-	private List<IAttributeCR> buffList = new ArrayList<>();
+    private List<BuffPlacer> buffPlacerList = new ArrayList<>();
+	private List<Effect> effectList = new ArrayList<>();
+
+    private static final Comparator comp = SortAttribute.INSTANCE;
 	
 	private final Class[] playerAttrs = new Class[]{
 		Strength.class,
 		Dexterity.class,
 		Proficient.class	
 	};
-	
-	private final Class[] generalAttrs = new Class[]{
-			PhysicalDamage.class,
-			Health.class,
-			Vitality.class,
-			Defence.class,
-			AttackSpeed.class,
-			MovementSpeed.class,
-			PrepareSpeed.class,
-			CriticalRate.class,
-			CriticalMulti.class,
-	};
+
+	public PlayerState() {
+		setTick(true);
+		setNBTStorage();
+		initAttr();
+	}
 
 	@Override
 	public void initAttr() {
@@ -70,17 +70,7 @@ public class PlayerState extends EntityState implements IAttributeContainer, IAt
 			e.printStackTrace();
 		}
 	}
-    
-    public PlayerState() {
-    	setTick(true);
-    	setNBTStorage();
-		initAttr();
-	}
-    
-    public EntityPlayer getPlayer(){
-    	return (EntityPlayer)this.getEntity();
-    }
-    
+
     public void tick() {
     	super.tick();
     	if(respawnUpdateTick > 0){
@@ -105,29 +95,28 @@ public class PlayerState extends EntityState implements IAttributeContainer, IAt
 			
 		if(isClient()){
 			ControlOverrider.override("stop_attack", bind.getKeyCode());
-			if(weapon == null || !(weapon.getItem() instanceof IAttributeContainer) || readyToAttack()){
+			if(weapon == null || !(weapon.getItem() instanceof IAttributeContainer) || isReadyToAttack()){
 				ControlOverrider.endOverride("stop_attack");
 			}
 		}
     }
+
+	public EntityPlayer getPlayer(){
+		return (EntityPlayer)this.getEntity();
+	}
     //FinalValue
-    
-    /**Attention! Before call this , make sure you have called (or need/no need to call) @link {@link #updateAttrListForCalc()}
-     * @param clazz
-     * @return
-     */
     public double getFinalValue(Class<? extends GeneralAttribute> clazz){
     	return this.calc(clazz.getSimpleName(), 0.0D);
     }
 
+    //Update
 	private void cleanAll(){
 		this.getAttrListForCalc().clear();
 		this.getCalcMapSIGMA().clear();
 		this.getCalcMapPAI().clear();
 		this.buffPlacerList.clear();
-		this.buffList.clear();
+		this.effectList.clear();
 	}
-
     public void updateAttrListForCalc(){
 		cleanAll();
 
@@ -146,7 +135,7 @@ public class PlayerState extends EntityState implements IAttributeContainer, IAt
     	for(int i=0; i < 5; i++){
     		equipment = getPlayer().getEquipmentInSlot(i);
     		if(equipment != null && equipment.getItem() instanceof IStateItem){
-    			ItemState state = PlayerItemState.get(getPlayer()).getItemState(equipment);
+    			ItemState state = PlayerItemStateBuffer.get(getPlayer()).getItemState(equipment);
     			for(IAttributeCR attr : state.getAttrMapAsList()){
 					attr.addToDealer(this);
     				/*this.getAttrListForCalc().add(attr);
@@ -161,18 +150,18 @@ public class PlayerState extends EntityState implements IAttributeContainer, IAt
 
     //Deal Attacking
 	@Override
-    public boolean readyToAttack(){
+    public boolean isReadyToAttack(){
     	return attackCD == 0;
     }
 
 	private void attacking() {
 		updateAttrListForCalc();
-
 		this.attackCD = (int)(Math.round(this.getFinalValue(AttackSpeed.class)));
 		if(!isClient())
 			sync();
 	}
-	
+
+    //GetDamage
 	public double getAttackDmg() {
 		double dmg;
 		if(this.getPlayer().getHeldItem() == null || !(this.getPlayer().getHeldItem().getItem() instanceof IAttributeContainer))
@@ -191,26 +180,25 @@ public class PlayerState extends EntityState implements IAttributeContainer, IAt
 		return dmg;
 	}
 
-    public void applyBuffPlacer(PlayerAttackEvent e){
-		System.out.println("applyingEffect");
-		for(IAttributeCR effect : buffPlacerList){
-			((BuffPlacer)effect).place(e);
+    //Defence
+    public double reducePhyDmg(double dmg) {
+        System.out.println("减免后伤害" + dmg * (1.0D - getFinalValue(Defence.class)));
+        return dmg * (1.0D - getFinalValue(Defence.class));
+    }
+
+    //Deal buff
+    public void placeBuff(PlayerAttackEvent e){
+		for(BuffPlacer buffPlacer : buffPlacerList){
+            buffPlacer.place(e);
 		}
 	}
 
-	public void applyBuff(PlayerAttackEvent e){
-		System.out.println("applyingEffect");
-		for(IAttributeCR effect : buffPlacerList){
-			((BuffPlacer)effect).place(e);
+	public void tickBuff(PlayerAttackEvent e){
+		for(Effect effect : effectList){
+			effect.tick(e);
 		}
 	}
 
-	//Defence
-	public double reducePhyDmg(double dmg) {
-		System.out.println("减免后伤害" + dmg * (1.0D - getFinalValue(Defence.class)));
-		return dmg * (1.0D - getFinalValue(Defence.class));
-	}
-	
 	//NBT
     public void fromNBT(NBTTagCompound tag) {
     	super.fromNBT(tag);
@@ -230,8 +218,14 @@ public class PlayerState extends EntityState implements IAttributeContainer, IAt
     	atag.setDouble("Proficient", ((PlayerAttribute)getAttr(Proficient.class)).getValue());
     	tag.setTag("Attr", atag);
     }
-    
+
     //For Interface
+    @Override
+    public List<BuffPlacer> getBuffPlacerList() { return this.buffPlacerList; }
+
+    @Override
+    public List<Effect> getEffectList() { return this.effectList; }
+
 	@Override
 	public List<IAttributeCR> getAttrListForCalc() {
 		return this.attrList;

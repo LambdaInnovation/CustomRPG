@@ -11,7 +11,7 @@ import net.minecraft.item.ItemStack;
 import cn.nolifem.CustomRPG;
 import cn.nolifem.api.IAttributeCR;
 import cn.nolifem.api.IAttributeContainer;
-import cn.nolifem.attributes.BaseAttributeCR;
+import cn.nolifem.api.attributes.BaseAttributeCR;
 import cn.nolifem.attributes.item.MaxStackSize;
 
 public class ItemCustomMisc extends Item implements IAttributeContainer{

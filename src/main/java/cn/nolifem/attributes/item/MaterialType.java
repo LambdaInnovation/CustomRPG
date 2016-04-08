@@ -2,12 +2,15 @@ package cn.nolifem.attributes.item;
 
 import java.util.List;
 
+import cn.lambdalib.s11n.SerializeIncluded;
 import cn.nolifem.api.IAttributeDealer;
+import cn.nolifem.api.attributes.ItemAttribute;
 import net.minecraft.util.EnumChatFormatting;
 import cn.nolifem.util.Lang;
 
 public class MaterialType extends ItemAttribute implements Cloneable{
-	
+
+	@SerializeIncluded
 	private String value;
 	
 	public MaterialType(){

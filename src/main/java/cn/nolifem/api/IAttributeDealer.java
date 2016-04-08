@@ -1,17 +1,12 @@
 package cn.nolifem.api;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Map.Entry;
 import java.util.function.Function;
 
-import cn.nolifem.attributes.effect.BuffPlacer;
-import cn.nolifem.attributes.effect.Effect;
-import cn.nolifem.attributes.general.PhysicalDamage;
+import cn.nolifem.api.attributes.BuffPlacer;
+import cn.nolifem.api.attributes.Effect;
 
 
 /**Interface use for store attributes, and place calc;

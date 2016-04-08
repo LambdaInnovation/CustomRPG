@@ -1,10 +1,10 @@
-package cn.nolifem.attributes.player;
+package cn.nolifem.api.attributes;
 
-import cn.nolifem.api.IAttributeContainer;
-import cn.nolifem.attributes.BaseAttributeCR;
+import cn.lambdalib.s11n.SerializeIncluded;
 
 public abstract class PlayerAttribute extends BaseAttributeCR implements Cloneable{
 
+	@SerializeIncluded
 	private double value;
 	
 	public double getValue() {

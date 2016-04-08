@@ -4,6 +4,7 @@ import java.util.List;
 
 import cn.nolifem.api.IAttributeDealer;
 import cn.nolifem.api.IAttributeCR;
+import cn.nolifem.api.attributes.GeneralAttribute;
 import cn.nolifem.attributes.player.Strength;
 
 public class BaseDamage extends GeneralAttribute implements Cloneable{

@@ -15,7 +15,7 @@ import cn.nolifem.api.IStateItem;
 import cn.nolifem.core.ModProps;
 import cn.nolifem.gui.GuiGrind;
 import cn.nolifem.gui.container.ContainerGrind;
-import cn.nolifem.state.PlayerItemState;
+import cn.nolifem.state.PlayerItemStateBuffer;
 import cn.nolifem.state.item.GrindToolState;
 import cn.nolifem.util.Lang;
 import cpw.mods.fml.relauncher.Side;
@@ -36,7 +36,7 @@ public class ItemGrindTool extends Item implements IStateItem<GrindToolState>{
         @Override
         protected Object getServerContainer(EntityPlayer player, World world, int x, int y, int z) {
             return player.getHeldItem() != null && player.getHeldItem().getItem() instanceof ItemGrindTool ?
-            		new ContainerGrind(player, ((GrindToolState) PlayerItemState.get(player).getItemState(player.getHeldItem())) ) : null;
+            		new ContainerGrind(player, ((GrindToolState) PlayerItemStateBuffer.get(player).getItemState(player.getHeldItem())) ) : null;
         }
     };
 

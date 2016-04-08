@@ -1,6 +1,5 @@
-package cn.nolifem.attributes.effect;
+package cn.nolifem.api.attributes;
 
-import cn.nolifem.attributes.BaseAttributeCR;
 import cn.nolifem.event.PlayerAttackEvent;
 
 /**

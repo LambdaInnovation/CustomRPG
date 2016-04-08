@@ -3,6 +3,7 @@ package cn.nolifem.attributes.general;
 import java.util.List;
 
 import cn.nolifem.api.IAttributeDealer;
+import cn.nolifem.api.attributes.GeneralAttribute;
 import net.minecraft.util.EnumChatFormatting;
 import cn.nolifem.api.IAttributeCR;
 import cn.nolifem.attributes.player.Strength;

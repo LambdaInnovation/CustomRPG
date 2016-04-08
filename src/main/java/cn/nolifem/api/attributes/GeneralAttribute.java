@@ -1,7 +1,7 @@
-package cn.nolifem.attributes.general;
+package cn.nolifem.api.attributes;
 
+import cn.lambdalib.s11n.SerializeIncluded;
 import cn.nolifem.api.IAttributeCR;
-import cn.nolifem.attributes.BaseAttributeCR;
 
 /**Simple Attribute with one value
  * @author Nolife_M
@@ -9,6 +9,7 @@ import cn.nolifem.attributes.BaseAttributeCR;
  */
 public abstract class GeneralAttribute extends BaseAttributeCR implements Cloneable{
 
+	@SerializeIncluded
 	private double value;
 		
 	public GeneralAttribute(){}

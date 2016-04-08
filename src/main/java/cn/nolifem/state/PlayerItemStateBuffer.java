@@ -3,6 +3,7 @@ package cn.nolifem.state;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.lambdalib.util.datapart.DataPart;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -17,20 +18,20 @@ import cn.nolifem.state.item.ItemState;
  * @author Nolife_M
  */
 @Registrant
-@RegDataPart(value=EntityPlayer.class)
-public class PlayerItemState extends EntityState implements IStateContainer{
+@RegDataPart(value=EntityLivingBase.class)
+public class PlayerItemStateBuffer extends DataPart<EntityLivingBase> implements IStateContainer{
 	
 	ItemStack weapon;
 	ItemState state;
 	
 	private Map<String, ItemState> statemap = new HashMap<>();
 	
-	public static PlayerItemState get(EntityLivingBase living) {
-		PlayerItemState part = EntityData.get(living).getPart(PlayerItemState.class);
+	public static PlayerItemStateBuffer get(EntityLivingBase living) {
+		PlayerItemStateBuffer part = EntityData.get(living).getPart(PlayerItemStateBuffer.class);
         return part;
     }
 	
-	public PlayerItemState() {
+	public PlayerItemStateBuffer() {
     	setTick(true);
 	}
 	

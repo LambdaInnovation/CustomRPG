@@ -17,9 +17,9 @@ import cn.nolifem.api.IAttributeCR;
 import cn.nolifem.api.IAttributeContainer;
 import cn.nolifem.api.IStateContainer;
 import cn.nolifem.api.IStateItem;
-import cn.nolifem.attributes.general.GeneralAttribute;
+import cn.nolifem.api.attributes.GeneralAttribute;
 import cn.nolifem.attributes.general.PhysicalDamage;
-import cn.nolifem.state.PlayerItemState;
+import cn.nolifem.state.PlayerItemStateBuffer;
 import cn.nolifem.state.PlayerState;
 import cn.nolifem.state.item.MeleeState;
 
@@ -65,20 +65,20 @@ public class ItemCustomMelee extends ItemSword implements IAttributeContainer, I
     
 	public boolean hitEntity(ItemStack stack, EntityLivingBase hite, EntityLivingBase e){
 		if(e instanceof EntityPlayer)
-			((MeleeState) PlayerItemState.get(e).getItemState(stack)).dealAttack((EntityPlayer)e);
+			((MeleeState) PlayerItemStateBuffer.get(e).getItemState(stack)).dealAttack((EntityPlayer)e);
 	    return true;
 	}
 	
     public boolean onBlockDestroyed(ItemStack stack, World p_150894_2_, Block p_150894_3_, int p_150894_4_, int p_150894_5_, int p_150894_6_, EntityLivingBase e){
     	if(e instanceof EntityPlayer)
-    		((MeleeState) PlayerItemState.get(e).getItemState(stack)).dealAttack((EntityPlayer)e);
+    		((MeleeState) PlayerItemStateBuffer.get(e).getItemState(stack)).dealAttack((EntityPlayer)e);
     	return true;
     }
     ////Info Dealing
 	
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List arraylist, boolean flag) {
-		((MeleeState) PlayerItemState.get(player).getItemState(stack)).addInfo(arraylist);;
+		((MeleeState) PlayerItemStateBuffer.get(player).getItemState(stack)).addInfo(arraylist);;
 	}
 	
 	public static String translate(String s){

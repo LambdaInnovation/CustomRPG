@@ -38,7 +38,7 @@ public class CommonEventHandler {
 		if(living instanceof EntityPlayer){
 			ItemStack weapon = living.getHeldItem();
 			EntityState state = ModuleState.get((EntityPlayer)living);
-			if(!state.readyToAttack() && weapon != null && weapon.getItem() instanceof IAttributeContainer)
+			if(!state.isReadyToAttack() && weapon != null && weapon.getItem() instanceof IAttributeContainer)
 				e.setCanceled(true);
 		}
 	}
@@ -68,7 +68,7 @@ public class CommonEventHandler {
 		double dmg = pstate.getAttackDmg();
 		dmg = tstate.reducePhyDmg(dmg);
 		e.dmg = (float)dmg;
-		pstate.applyBuffPlacer(e);
+		pstate.placeBuff(e);
 
 	}
 }
